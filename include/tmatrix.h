@@ -31,14 +31,22 @@ public:
   }
   TDynamicVector(T* arr, size_t s) : sz(s)
   {
-    assert(arr != nullptr && "TDynamicVector ctor requires non-nullptr arg");
-    pMem = new T[sz];
-    std::copy(arr, arr + sz, pMem);
+      if (arr == nullptr) {
+          throw std::invalid_argument("TDynamicVector ctor: arr cannot be nullptr");
+      }
+
+      pMem = new T[sz];
+      std::copy(arr, arr + sz, pMem);
   }
   TDynamicVector(const TDynamicVector& v): sz(v.sz)
   {
+      if (sz == 0) {
+          pMem = nullptr;
+          return;
+      }
+
       pMem = new T[sz];
-      for (int i = 0; i < sz; i++) {
+      for (size_t i = 0; i < sz; i++) {
           pMem[i] = v.pMem[i];
       }
   }
@@ -50,6 +58,7 @@ public:
   ~TDynamicVector()
   {
       delete[] pMem;
+      pMem = nullptr;
   }
   TDynamicVector& operator=(const TDynamicVector& v)
   {
@@ -75,14 +84,10 @@ public:
   // индексация
   T& operator[](size_t ind)
   {
-      if (ind >= sz)
-          throw out_of_range("Index out of range");
       return pMem[ind];
   }
   const T& operator[](size_t ind) const
   {
-      if (ind >= sz)
-          throw out_of_range("Index out of range");
       return pMem[ind];
   }
   // индексация с контролем
@@ -219,6 +224,7 @@ public:
             pMem[i] = TDynamicVector<T>(sz);
     }
 
+    using TDynamicVector<TDynamicVector<T>>::at;
     using TDynamicVector<TDynamicVector<T>>::operator[];
 
     // сравнение

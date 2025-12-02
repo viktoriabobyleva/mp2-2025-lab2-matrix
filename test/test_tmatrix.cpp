@@ -57,19 +57,28 @@ TEST(TDynamicMatrix, can_get_size)
 TEST(TDynamicMatrix, can_set_and_get_element)
 {
 	TDynamicMatrix<int> m(2);
-	ASSERT_NO_THROW(m[0][0] = 3);
+
+	m[0][0] = 1;
+	m[0][1] = 2;
+	m[1][0] = 3;
+	m[1][1] = 4;
+
+	EXPECT_EQ(m[0][0], 1);
+	EXPECT_EQ(m[0][1], 2);
+	EXPECT_EQ(m[1][0], 3);
+	EXPECT_EQ(m[1][1], 4);
 }
 
 TEST(TDynamicMatrix, throws_when_set_element_with_negative_index)
 {
 	TDynamicMatrix<int> m(2);
-	ASSERT_ANY_THROW(m[-2][0] = 3);
+	ASSERT_THROW(m.at(static_cast<size_t>(-2))[0] = 3, std::out_of_range);
 }
 
 TEST(TDynamicMatrix, throws_when_set_element_with_too_large_index)
 {
 	TDynamicMatrix<int> m(2);
-	ASSERT_ANY_THROW(m[10000][0] = 3);
+	ASSERT_THROW(m.at(10000)[0] = 3, std::out_of_range);
 }
 
 TEST(TDynamicMatrix, can_assign_matrix_to_itself)
@@ -148,13 +157,13 @@ TEST(TDynamicMatrix, can_subtract_matrices_with_equal_size)
 {
 	TDynamicMatrix<int> m(3);
 	TDynamicMatrix<int> n(3);
-	ASSERT_NO_THROW(m * n);
+	ASSERT_NO_THROW(m - n);
 }
 
 TEST(TDynamicMatrix, cant_subtract_matrixes_with_not_equal_size)
 {
 	TDynamicMatrix<int> m(3);
 	TDynamicMatrix<int> n(2);
-	ASSERT_ANY_THROW(m * n);
+	ASSERT_ANY_THROW(m - n);
 }
 
